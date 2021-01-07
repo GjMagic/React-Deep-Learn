@@ -22,8 +22,12 @@ const virtualDOM = (
 
 // TinyReact.render(virtualDOM, root)
 
+function Demo () {
+  return <div>Hello</div>
+}
+
 function Heart () {
-  return <div>&hearts;</div>
+  return <div>&hearts; <Demo /></div>
 }
 
 TinyReact.render(<Heart />, root)
