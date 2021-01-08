@@ -26,10 +26,33 @@ function Demo () {
   return <div>Hello</div>
 }
 
-function Heart () {
-  return <div>&hearts; <Demo /></div>
+function Heart (props) {
+  return (
+    <div>
+      {props.title}
+      &hearts;
+      <Demo />
+    </div>
+  )
 }
 
-TinyReact.render(<Heart />, root)
+// TinyReact.render(<Heart title='Hello React' />, root)
 
-console.log(virtualDOM)
+// console.log(<Heart title='Hello React' />)
+
+class Alert extends TinyReact.Component {
+  constructor (props) {
+    super(props)
+  }
+
+  render () {
+    const { name, age } = this.props
+    return (
+      <div>
+        {name}{age}
+      </div>
+    )
+  }
+}
+
+TinyReact.render(<Alert name='弓箭' age={26} />, root)
