@@ -32,8 +32,6 @@ const modifyDOM = (
     {2 == 2 && <div>2</div>}
     <span>这是一段被修改过得内容</span>
     <button onClick={() => alert("你好！！！")}>点击我</button>
-    <h6>这个将会被删除</h6>
-    2, 3
     <input type="text" value="13" />
   </div>
 )
