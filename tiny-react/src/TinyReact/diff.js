@@ -1,6 +1,7 @@
 import mountElement from './mountElement'
 import updateTextNode from './updateTextNode'
 import updateNodeElement from './updateNodeElement'
+import createDOMElement from './createDOMElement'
 
 export default function diff (virtualDOM, container, oldDOM) {
   const oldVirtualDOM = oldDOM && oldDOM._virtualDOM
@@ -8,6 +9,9 @@ export default function diff (virtualDOM, container, oldDOM) {
   // 判断旧节点是否存在
   if (!oldDOM) {
     mountElement(virtualDOM, container)
+  } else if (virtualDOM.type !== oldVirtualDOM.type && typeof virtualDOM.type !== 'function') {
+    const newElement = createDOMElement(virtualDOM)
+    oldDOM.parentNode.replaceChild(newElement, oldDOM)
   } else if (oldVirtualDOM && oldVirtualDOM.type === virtualDOM.type) {
     if (virtualDOM.type === 'text') {
       // 更新文本内容
