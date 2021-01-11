@@ -36,11 +36,11 @@ const modifyDOM = (
   </div>
 )
 
-TinyReact.render(virtualDOM, root)
+// TinyReact.render(virtualDOM, root)
 
-setTimeout(() => {
+/* setTimeout(() => {
   TinyReact.render(modifyDOM, root)
-}, 2000);
+}, 2000); */
 
 function Demo () {
   return <div>Hello</div>
@@ -63,16 +63,28 @@ function Heart (props) {
 class Alert extends TinyReact.Component {
   constructor (props) {
     super(props)
+    this.state = {
+      title: 'Default Title'
+    }
+    this.handleClick = this.handleClick.bind(this)
+  }
+
+  handleClick () {
+    this.setState({
+      title: 'Change Title'
+    })
   }
 
   render () {
+    const { title } = this.state
     const { name, age } = this.props
     return (
       <div>
         {name}{age}
+        <button onClick={this.handleClick}>{title}</button>
       </div>
     )
   }
 }
 
-// TinyReact.render(<Alert name='弓箭' age={26} />, root)
+TinyReact.render(<Alert name='弓箭' age={26} />, root)
