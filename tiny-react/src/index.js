@@ -108,9 +108,59 @@ class Alert extends TinyReact.Component {
   }
 }
 
-TinyReact.render(<Alert name='弓箭' age={26} />, root)
+/* TinyReact.render(<Alert name='弓箭' age={26} />, root)
 
 setTimeout(() => {
   TinyReact.render(<Alert name='弓箭123' age={20} />, root)
-  // TinyReact.render(<Heart title='我是Heart组件' />, root)
-}, 2000);
+  TinyReact.render(<Heart title='我是Heart组件' />, root)
+}, 2000); */
+
+class KeyDome extends TinyReact.Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      persons: [{
+        id: 0,
+        name: '张三'
+      }, {
+        id: 1,
+        name: '李四'
+      }, {
+        id: 2,
+        name: '王五'
+      }, {
+        id: 3,
+        name: '赵六'
+      }]
+    }
+    this.handleClick = this.handleClick.bind(this)
+  }
+
+  handleClick () {
+    const newState = JSON.parse(JSON.stringify(this.state))
+    // newState.persons.push(newState.persons.shift())
+    newState.persons.splice(1, 0, { id: 4, name: '李逵' })
+    this.setState(newState)
+  }
+
+  render () {
+    const { persons } = this.state
+    return (
+      <div>
+        <ul>
+          {
+            persons.map(person => {
+              const { id, name } = person
+              return (
+                <li key={id}>{name}</li>
+              )
+            })
+          }
+        </ul>
+        <button onClick={this.handleClick}>按钮</button>
+      </div>
+    )
+  }
+}
+
+TinyReact.render(<KeyDome />, root)
