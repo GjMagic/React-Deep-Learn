@@ -6,7 +6,6 @@ import unmountNode from './unmountNode'
 import diffComponent from './diffComponent'
 
 export default function diff (virtualDOM, container, oldDOM) {
-  console.log(virtualDOM)
   const oldVirtualDOM = oldDOM && oldDOM._virtualDOM
   const oldComponent = oldVirtualDOM && oldVirtualDOM.component
   // 判断旧节点是否存在
