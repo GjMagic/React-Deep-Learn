@@ -60,6 +60,19 @@ function Heart (props) {
 
 // console.log(<Heart title='Hello React' />)
 
+class Ref extends TinyReact.Component {
+  constructor(props) {
+    super(props)
+    this.state = {}
+  }
+
+  render() {
+    return (
+      <div>Ref</div>
+    )
+  }
+}
+
 class Alert extends TinyReact.Component {
   constructor (props) {
     super(props)
@@ -70,9 +83,15 @@ class Alert extends TinyReact.Component {
   }
 
   handleClick () {
+    console.log(this.input.value)
+    console.log(this.ref, 'this.ref')
     this.setState({
       title: 'Change Title'
     })
+  }
+
+  componentDidMount() {
+    console.log('componentDidMount')
   }
 
   render () {
@@ -81,7 +100,9 @@ class Alert extends TinyReact.Component {
     return (
       <div>
         {name}{age}
+        <input type='text' ref={input => this.input = input} />
         <button onClick={this.handleClick}>{title}</button>
+        <Ref ref={ref => this.ref = ref} />
       </div>
     )
   }
