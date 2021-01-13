@@ -94,6 +94,10 @@ class Alert extends TinyReact.Component {
     console.log('componentDidMount')
   }
 
+  componentWillUnmount() {
+    console.log('componentWillUnmount')
+  }
+
   render () {
     const { title } = this.state
     const { name, age } = this.props
@@ -139,7 +143,8 @@ class KeyDome extends TinyReact.Component {
   handleClick () {
     const newState = JSON.parse(JSON.stringify(this.state))
     // newState.persons.push(newState.persons.shift())
-    newState.persons.splice(1, 0, { id: 4, name: '李逵' })
+    // newState.persons.splice(1, 0, { id: 4, name: '李逵' })
+    newState.persons.pop()
     this.setState(newState)
   }
 
@@ -152,7 +157,10 @@ class KeyDome extends TinyReact.Component {
             persons.map(person => {
               const { id, name } = person
               return (
-                <li key={id}>{name}</li>
+                <li key={id}>
+                  {name}
+                  <Alert name='弓箭' age={26} />
+                </li>
               )
             })
           }
