@@ -63,6 +63,9 @@ var createTaskQueue = function createTaskQueue() {
     // 从任务队列获取任务
     pop: function pop() {
       return taskQueue.shift();
+    },
+    isEmpty: function isEmpty() {
+      return taskQueue.length === 0;
     }
   };
 };
@@ -97,20 +100,51 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "render": () => /* binding */ render
 /* harmony export */ });
 /* harmony import */ var _Misc__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Misc */ "./src/React/Misc/index.js");
+function _readOnlyError(name) { throw new TypeError("\"" + name + "\" is read-only"); }
+
 
 var taskQueue = (0,_Misc__WEBPACK_IMPORTED_MODULE_0__.createTaskQueue)();
+var subTask = null;
+
+var getFirstTask = function getFirstTask() {};
+
+var executeTask = function executeTask(fiber) {};
+
+var workLoop = function workLoop(deadline) {
+  // 如果子任务不存在，就去获取子任务
+  if (!subTask) {
+    subTask = (_readOnlyError("subTask"), getFirstTask());
+  } // 如果任务存在且浏览器有空余时间，就调用executeTask方法执行任务，接受任务 返回新任务
+
+
+  while (subTask && deadline.timeRemaining > 1) {
+    subTask = (_readOnlyError("subTask"), executeTask(subTask));
+  }
+};
+
+var performTask = function performTask(deadline) {
+  // 执行任务
+  workLoop(deadline); // 若任务存在或者任务队列里还有任务时，再次利用浏览器空闲时间执行任务
+
+  if (subTask || !taskQueue.isEmpty) {
+    requestIdleCallback(performTask);
+  }
+};
+
 var render = function render(element, dom) {
   /*
     1、向任务队列中添加任务
     2、指定在浏览器空闲时执行任务
   */
+  // 通过virtualDOM对象创建Fiber对象
   taskQueue.push({
     dom: dom,
     props: {
       children: element
     }
-  });
-  console.log(taskQueue.pop());
+  }); // 利用浏览器空闲时间执行任务
+
+  requestIdleCallback(performTask);
 };
 
 /***/ }),
