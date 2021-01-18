@@ -1,14 +1,31 @@
 import { createTaskQueue } from '../Misc'
 
 const taskQueue = createTaskQueue()
-const subTask = null
-const getFirstTask = () => {}
-const executeTask = fiber => {}
+let subTask = null
+
+const getFirstTask = () => {
+  // 从任务队列中获取任务
+  const task = taskQueue.pop()
+  const { props, dom } = task
+  // 返回最外层节点的fiber对象
+  return {
+    props,
+    stateNode: dom,
+    tag: 'host_root',
+    effects: [],
+    child: null,
+  }
+}
+
+const executeTask = fiber => {
+  console.log(fiber)
+}
 
 const workLoop = deadline => {
   // 如果子任务不存在，就去获取子任务
   if (!subTask) {
     subTask = getFirstTask()
+    console.log(subTask)
   }
   // 如果任务存在且浏览器有空余时间，就调用executeTask方法执行任务，接受任务 返回新任务
   while (subTask && deadline.timeRemaining > 1) {

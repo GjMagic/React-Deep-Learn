@@ -100,25 +100,39 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "render": () => /* binding */ render
 /* harmony export */ });
 /* harmony import */ var _Misc__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Misc */ "./src/React/Misc/index.js");
-function _readOnlyError(name) { throw new TypeError("\"" + name + "\" is read-only"); }
-
 
 var taskQueue = (0,_Misc__WEBPACK_IMPORTED_MODULE_0__.createTaskQueue)();
 var subTask = null;
 
-var getFirstTask = function getFirstTask() {};
+var getFirstTask = function getFirstTask() {
+  // 从任务队列中获取任务
+  var task = taskQueue.pop();
+  var props = task.props,
+      dom = task.dom; // 返回最外层节点的fiber对象
 
-var executeTask = function executeTask(fiber) {};
+  return {
+    props: props,
+    stateNode: dom,
+    tag: 'host_root',
+    effects: [],
+    child: null
+  };
+};
+
+var executeTask = function executeTask(fiber) {
+  console.log(fiber);
+};
 
 var workLoop = function workLoop(deadline) {
   // 如果子任务不存在，就去获取子任务
   if (!subTask) {
-    subTask = (_readOnlyError("subTask"), getFirstTask());
+    subTask = getFirstTask();
+    console.log(subTask);
   } // 如果任务存在且浏览器有空余时间，就调用executeTask方法执行任务，接受任务 返回新任务
 
 
   while (subTask && deadline.timeRemaining > 1) {
-    subTask = (_readOnlyError("subTask"), executeTask(subTask));
+    subTask = executeTask(subTask);
   }
 };
 
