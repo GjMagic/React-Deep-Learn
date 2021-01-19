@@ -1,4 +1,4 @@
-import { createTaskQueue } from '../Misc'
+import { createTaskQueue, arrified, createStateNode, getTag } from '../Misc'
 
 const taskQueue = createTaskQueue()
 let subTask = null
@@ -17,7 +17,44 @@ const getFirstTask = () => {
   }
 }
 
+const reconcileChildren = (fiber, children) => {
+  // children可能是对象也可能是数组，将children转换成数组
+  const arrifiedChildren = arrified(children)
+  let index = 0
+  const numberOfElements = arrifiedChildren.length
+  let element = null
+  let newFiber = null
+  let prevFiber = null
+
+  while (index < numberOfElements) {
+    element = arrifiedChildren[index]
+    const { type, props } = element
+    newFiber = {
+      type,
+      props,
+      tag: getTag(element),
+      effects: [],
+      effectsTag: 'placement',
+      parent: fiber,
+    }
+
+    newFiber.stateNode = createStateNode(newFiber)
+
+    // 为父级fiber添加子集fiber
+    if (index === 0) {
+      fiber.child = newFiber
+    } else {
+      prevFiber.sibling = newFiber
+    }
+
+    prevFiber = newFiber
+
+    index++
+  }
+}
+
 const executeTask = fiber => {
+  reconcileChildren(fiber, fiber.props.children)
   console.log(fiber)
 }
 
@@ -25,10 +62,9 @@ const workLoop = deadline => {
   // 如果子任务不存在，就去获取子任务
   if (!subTask) {
     subTask = getFirstTask()
-    console.log(subTask)
   }
   // 如果任务存在且浏览器有空余时间，就调用executeTask方法执行任务，接受任务 返回新任务
-  while (subTask && deadline.timeRemaining > 1) {
+  while (subTask && deadline.timeRemaining() > 1) {
     subTask = executeTask(subTask)
   }
 }
