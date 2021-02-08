@@ -3,6 +3,16 @@ import { createTaskQueue, arrified, createStateNode, getTag } from '../Misc'
 const taskQueue = createTaskQueue()
 let subTask = null
 
+let pendingCommit = null
+
+const commitAllWork = (fiber) => {
+  fiber.effects.forEach(item => {
+    if (item.effectsTag === 'placement') {
+      item.parent.stateNode.appendChild(item.stateNode)
+    }
+  })
+}
+
 const getFirstTask = () => {
   // 从任务队列中获取任务
   const task = taskQueue.pop()
@@ -71,6 +81,7 @@ const executeTask = fiber => {
     currentExecutelyFiber = currentExecutelyFiber.parent
   }
 
+  pendingCommit = currentExecutelyFiber
   console.log(fiber)
 }
 
@@ -83,6 +94,8 @@ const workLoop = deadline => {
   while (subTask && deadline.timeRemaining() > 1) {
     subTask = executeTask(subTask)
   }
+
+  pendingCommit && commitAllWork(pendingCommit)
 }
 
 const performTask = deadline => {
